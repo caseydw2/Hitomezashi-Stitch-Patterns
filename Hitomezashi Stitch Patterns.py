@@ -136,7 +136,7 @@ def stitch_pattern(phrase1,phrase2):
             if isvowel(letter):
                 num = int((len(phrase1)+1)/2)
             else:
-                num = int((len(phrase1)-1)/2)
+                num = int((len(phrase1)+1)/2)
         stitch_line(im,num,i,factor,horizontal = False, on = isvowel(letter))    
     im.show()
 
