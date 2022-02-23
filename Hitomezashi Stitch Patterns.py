@@ -62,7 +62,7 @@ def isvowel(letter):
 
 
 
-def stitch_line(im, num, coor, factor, horizontal= True, on= True ):
+def stitch_line(im, num, coor, factor, horizontal= True, on= True,widths = 2 ):
     '''
     
 
@@ -80,6 +80,8 @@ def stitch_line(im, num, coor, factor, horizontal= True, on= True ):
         True if stiches go horizontaly. False if vertically. The default is True.
     on : bool, optional
         Starts stitching in initial position. The default is True.
+    widths : int, optiona;
+        Width of the lines drawn
 
     Returns
     -------
@@ -91,25 +93,25 @@ def stitch_line(im, num, coor, factor, horizontal= True, on= True ):
         a, b, c, d = coor * factor , 2*k*factor, (2*k + 1)*factor, 2*(k+1)*factor
         if on:
             if horizontal:
-                draw.line([(b,a),(c,a)],width=2)
+                draw.line([(b,a),(c,a)],width=widths)
             else:
-                draw.line([(a,b),(a,c)],width=2)
+                draw.line([(a,b),(a,c)],width=widths)
         else:
             if horizontal:
-                draw.line([(c,a),(d,a)],width=2)
+                draw.line([(c,a),(d,a)],width=widths)
             else:
-                draw.line([(a,c),(a,d)],width=2)
+                draw.line([(a,c),(a,d)],width=widths)
     
         
-def stitch_pattern(phrase1,phrase2):
+def stitch_pattern(phrase1,phrase2,save = False,widths = 2):
     '''
     
 
     Parameters
     ----------
-    phrase1 : TYPE
+    phrase1a : TYPE
         phrase for horizontal stitching.
-    phrase2 : TYPE
+    phrase2a : TYPE
         phrase for vertical stitching.
 
     Returns
@@ -118,26 +120,28 @@ def stitch_pattern(phrase1,phrase2):
 
     '''
     phrase1,phrase2 = squish_upper(phrase1),squish_upper(phrase2)
-    W,H = factor*len(phrase2) ,factor*len(phrase1)
+    W,H = factor*(len(phrase2)-1)+widths ,factor*(len(phrase1)-1)+widths
     im= Image.new("RGB",(W,H),(0,0,0))
     for i,letter in enumerate(phrase1):
         if len(phrase2) % 2 == 0:
             num = int(len(phrase2) / 2)
         else:
             if isvowel(letter):
-                num = int((len(phrase2)+1)/2)
+                num = int((len(phrase2))+1/2)
             else:
-                num = int((len(phrase2)-1)/2)
-        stitch_line(im,num,i,factor,on = isvowel(letter))
+                num = int((len(phrase2))/2)
+        stitch_line(im,num,i,factor,on = isvowel(letter),widths = widths)
     for i,letter in enumerate(phrase2):
         if len(phrase1) % 2 == 0:
             num = int(len(phrase1) / 2)
         else:
             if isvowel(letter):
-                num = int((len(phrase1)+1)/2)
+                num = int((len(phrase1))+1/2)
             else:
-                num = int((len(phrase1)+1)/2)
-        stitch_line(im,num,i,factor,horizontal = False, on = isvowel(letter))    
+                num = int((len(phrase1))/2)
+        stitch_line(im,num,i,factor,horizontal = False, on = isvowel(letter),widths = widths)
+    if save:
+        im.save("Hitomezashi Stitch, Phrase 1 {}, Phrase 2 {}.png".format(phrase1,phrase2))
     im.show()
 
 
